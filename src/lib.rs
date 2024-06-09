@@ -77,11 +77,14 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
     let mut results = Vec::new();
+    let mut line_number: u128 = 1;
 
     for line in contents.lines() {
         if line.to_lowercase().contains(&query) {
-            results.push(line);
+            let result_line =format!("line {}: {}",line_number.to_string(), line);
+            results.push(Box::leak(result_line.into_boxed_str()) as &'a str);
         }
+        line_number += 1;
     }
 
     results
