@@ -4,6 +4,7 @@ use std::io::prelude::*;
 use std::env;
 
 pub struct Config {
+    pub init: String,
     pub query: String,
     pub filename: String,
     pub case_sensitive: bool,
@@ -11,15 +12,33 @@ pub struct Config {
 
 impl Config {
     pub fn new(args: &[String]) -> Result<Config, &'static str>{
-        if args.len() < 3 {
-            return Err("not enough arguments");
+        if args.len() == 1 {
+            return Err("Use -h for help")
+        } else if args.len() == 2 && args[1] == "-h" {
+            return Err("Tool for searching line of the word in a file.
+- Search Case sensitive: -s <search_word> <file_location>
+- Search Case insensitive: -sci <search_word> <file_location>
+- Version: -v
+- Help: -h
+Excess arguments will be ignored")
+        } else if args.len() == 2 && args[1] == "-v"{
+            return Err("minigrep 1.0")
+        } else if args[1] != "-s"&& args[1] != "-sci"&& args[1] != "-v"&& args[1] != "-h" {
+            return Err("Invalid flag, use -h for help.");
+        } else if args.len() < 4 && (args[1] == "-s" || args[1] == "-sci"){
+            return Err("Not enough arguments, use -h for help.");
+        } else if args.len() > 2 && (args[1] != "-s" && args[1] != "-sci"){
+            return Err("Invalid arguments, use -h for help.");
+        } else if args[1] == "-sci" {
+            env::set_var("CASE_INSENSITIVE", "1")
         }
-        let query: String = args[1].clone();
-        let filename: String = args[2].clone();
+        let init: String = args[1].clone();
+        let query: String = args[2].clone();
+        let filename: String = args[3].clone();
 
         let case_sensitive: bool = env::var("CASE_INSENSITIVE").is_err();
 
-        Ok(Config {query, filename, case_sensitive})
+        Ok(Config {init, query, filename, case_sensitive})
     }
 }
 
@@ -42,50 +61,16 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
-// #[cfg(test)]
-// mod test{
-//     use super::*;
-
-//     #[test]
-//     fn case_sensitive() {
-//         let query = "duct";
-//         let contents = "\
-// Rust:
-// safe, fast, productive.
-// Pick three.
-// Duct tape.";
-
-//         assert_eq!(
-//             vec!["safe, fast, productive."],
-//             search(query, contents),
-//         );
-//     }
-// }
-
-//     #[test]
-//     fn case_insensitive() {
-//         let query = "rUsT";
-//         let contents = "\
-// Rust:
-// safe, fast, productive.
-// Pick three.
-// Trust me.";
-
-//         assert_eq!(
-//             vec!["Rust:", "Trust me."],
-//             search_case_insensitive(query,contents),
-//         );
-//     }
-
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let mut results = Vec::new();
-
+    let mut line_number: u128 = 1;
     for line in contents.lines() {
         if line.contains(query) {
-            results.push(line);
+            let result_line =format!("line {}: {}",line_number.to_string(), line);
+            results.push(Box::leak(result_line.into_boxed_str()) as &'a str);
         }
+        line_number += 1;
     }
-
     results
 }
 
