@@ -3,7 +3,7 @@ Tool for searching line of the word in a file.
 - Search Case sensitive: -s <search_word> <file_location>
 - Search Case insensitive: -sci <search_word> <file_location>
 - Version: -v
-- Help: -h
+- Help: -h\
 Excess arguments will be ignored
 
 ## Installation
