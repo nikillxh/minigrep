@@ -1,9 +1,0 @@
-target/
-pkg/
-cargoinstall.sh
-control flow
-minigrep-1.0-1-x86_64.pkg.tar.zst
-pacmaninstall.sh
-src/target/
-space test/
-.gitignore
