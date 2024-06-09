@@ -11,6 +11,7 @@ For Exiting Installation: Press 3 or Ctrl + C"
         rm -f minigrep-1.0-1-x86_64.pkg.tar.zst
         cargo build --release
         makepkg -si --noconfirm
+        [[ $? -eq 0 ]] && echo "Installed successfully!" && exit
     elif (( $input == 2 )); then
         echo "Enter binary install path: "
         read directory_path
