@@ -7,13 +7,13 @@ Tool for searching line of the word in a file.
 Excess arguments will be ignored
 
 ## Installation
-#### Execute install.sh:
+### Execute install.sh:
 (POSIX compliant shell preferred!)
 1. Open terminal in file location and run:
-`chmod u+x test.sh && ./install.sh`
+`chmod u+x install.sh && ./install.sh`
 2. Open terminal in file location and run:
 `bash install.sh`
 
-#### Arch Linux:
+### Arch Linux:
 No need to run install.sh, just open terminal in the folder and run:
 `makepkg -si`
